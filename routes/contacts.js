@@ -1,4 +1,7 @@
 import express from 'express';
+import { check, validationResult } from 'express-validator';
+import ContactsController from '../controllers/contactsController.js';
+import AuthMW from '../middleware/authMiddleware.js';
 
 const ContactsRouter = express.Router();
 
@@ -7,8 +10,8 @@ const ContactsRouter = express.Router();
  * @description     Get all users' contacts
  * @access          Private
  */
-ContactsRouter.get('/', (req, res) => {
-  res.send('Registers a user...');
+ContactsRouter.get('/', AuthMW, (req, res) => {
+  ContactsController.getUserContacts(req, res);
 });
 
 /**
@@ -16,17 +19,44 @@ ContactsRouter.get('/', (req, res) => {
  * @description     Add new contact
  * @access          Private
  */
-ContactsRouter.post('/', (req, res) => {
-  res.send('Add a new contact');
-});
+ContactsRouter.post(
+  '/',
+  [
+    AuthMW,
+    [
+      check('name', 'Please add Contact Name').not().isEmpty(),
+      check('name', 'Please enter a valid name').isLength({ min: 2, max: 80 }),
+      check('email', 'Please enter a valid email').isEmail().optional(),
+      check('phone', 'Please enter a valid phone number')
+        .isLength({
+          min: 4,
+          max: 15,
+        })
+        .optional(),
+      check('contactType', 'Please enter a valid contact type')
+        .isLength({ max: 20 })
+        .isIn(['personal', 'professional', 'friend', 'business'])
+        .optional(),
+    ],
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    ContactsController.addNewContact(req, res);
+  }
+);
 
 /**
  * @route           PUT api/contacts/:id
  * @description     Update a contact
  * @access          Private
  */
-ContactsRouter.put('/:id', (req, res) => {
-  res.send('update a contact');
+ContactsRouter.put('/:id', AuthMW, (req, res) => {
+  ContactsController.updateContact(req, res);
 });
 
 /**
@@ -34,8 +64,8 @@ ContactsRouter.put('/:id', (req, res) => {
  * @description     Delete a contact
  * @access          Private
  */
-ContactsRouter.delete('/:id', (req, res) => {
-  res.send('delete a contact');
+ContactsRouter.delete('/:id', AuthMW, (req, res) => {
+  ContactsController.deleteContact(req, res);
 });
 
 export default ContactsRouter;
