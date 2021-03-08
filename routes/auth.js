@@ -1,4 +1,6 @@
 import express from 'express';
+import { check, validationResult } from 'express-validator';
+import AuthController from '../controllers/authController.js';
 
 const AuthRouter = express.Router();
 
@@ -16,8 +18,21 @@ AuthRouter.get('/', (req, res) => {
  * @description     Auth user & get token
  * @access          Public
  */
-AuthRouter.post('/', (req, res) => {
-  res.send('Login user...');
-});
+AuthRouter.post(
+  '/',
+  [
+    check('email', 'Please enter a valid email address.').isEmail(),
+    check('password', 'Password is required').exists(),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    AuthController.login(req, res);
+  }
+);
 
 export default AuthRouter;
