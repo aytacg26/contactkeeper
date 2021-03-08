@@ -3,8 +3,14 @@ import helmet from 'helmet';
 import UsersRouter from './routes/users.js';
 import AuthRouter from './routes/auth.js';
 import ContactsRouter from './routes/contacts.js';
+import connectDB from './config/db.js';
 
 const app = express();
+
+//Connect Database:
+connectDB();
+
+//Use helmet package:
 app.use(helmet());
 
 //Define Routes
