@@ -10,6 +10,9 @@ const app = express();
 //Connect Database:
 connectDB();
 
+//init middleware:
+app.use(express.json({ extended: false }));
+
 //Use helmet package:
 app.use(helmet());
 
