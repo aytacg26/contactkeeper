@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import config from 'config';
 
 /**
  * @route           POST api/users
@@ -31,7 +33,22 @@ export const registerUser = async (req, res) => {
 
     await user.save();
 
-    res.json({ message: 'User Registered Successfully' });
+    //For JWT, as payload, we will just send the user id
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    const jwtKey = config.get('JWTSecretKey');
+    const expire = config.get('tokenExpire');
+
+    jwt.sign(payload, jwtKey, { expiresIn: expire }, (error, token) => {
+      if (error) throw error;
+      res.json({ token });
+    }); //Jwt will expire in 5 hours, in production, we have to make it 3600 seconds (1 hour)
+
+    // res.json({ message: 'User Registered Successfully' });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: `Internal Server Error` });
