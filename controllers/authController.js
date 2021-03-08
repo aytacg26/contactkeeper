@@ -40,8 +40,24 @@ const login = async (req, res) => {
   }
 };
 
+const getAuthUser = async (req, res) => {
+  try {
+    const authUserId = req.user.id;
+
+    //We will find user by id and with projection we will prevent password to fetched from database
+    const authUser = await User.findById(authUserId, { password: 0 });
+
+    //we will send authUser data, without password
+    res.json(authUser);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: 'Internal Server Error.' });
+  }
+};
+
 const authController = Object.freeze({
   login,
+  getAuthUser,
 });
 
 export default authController;
