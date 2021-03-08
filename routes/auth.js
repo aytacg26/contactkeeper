@@ -1,6 +1,7 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import AuthController from '../controllers/authController.js';
+import AuthMW from '../middleware/authMiddleware.js';
 
 const AuthRouter = express.Router();
 
@@ -9,8 +10,8 @@ const AuthRouter = express.Router();
  * @description     Get logged in user
  * @access          Private
  */
-AuthRouter.get('/', (req, res) => {
-  res.send('Get logged in user...');
+AuthRouter.get('/', AuthMW, (req, res) => {
+  AuthController.getAuthUser(req, res);
 });
 
 /**
