@@ -77,21 +77,24 @@ const ContactForm = () => {
       />
       <h5>Contact Type</h5>
       <input
+        id='personal'
         type='radio'
         name='contactType'
         value='personal'
         checked={contactType === 'personal'}
         onChange={handleChange}
-      />{' '}
-      Personal{' '}
+      />
+      <label htmlFor='personal'>Personal</label>
       <input
+        id='professional'
         type='radio'
         name='contactType'
         value='professional'
         checked={contactType === 'professional'}
         onChange={handleChange}
-      />{' '}
-      Professional{' '}
+        style={{ marginLeft: 8 }}
+      />
+      <label htmlFor='professional'>Professional</label>
       <div>
         <input
           type='submit'
