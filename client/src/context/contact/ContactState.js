@@ -43,8 +43,16 @@ const ContactState = (props) => {
 
   //ACTIONS :
   //Add Contact
+  const addContact = (contact) => {
+    //Before submitting to MongoDB, we will create id by using uuid to test  action methods
+    contact.id = uuid();
+    dispatch({ type: ADD_CONTACT, payload: contact });
+  };
 
   //Delete Contact
+  const deleteContact = (contactId) => {
+    dispatch({ type: DELETE_CONTACT, payload: contactId });
+  };
 
   //Set Current Contact
 
@@ -57,7 +65,9 @@ const ContactState = (props) => {
   //Clear Filter
 
   return (
-    <ContactContext.Provider value={{ contacts: state.contacts }}>
+    <ContactContext.Provider
+      value={{ contacts: state.contacts, addContact, deleteContact }}
+    >
       {props.children}
     </ContactContext.Provider>
   );
