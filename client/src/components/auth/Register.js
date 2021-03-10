@@ -3,7 +3,7 @@ import AlertContext from '../../context/alert/alertContext';
 import AuthContext from '../../context/auth/authContext';
 import { emailValidation } from '../../utils/validations';
 
-const Register = () => {
+const Register = (props) => {
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -13,14 +13,22 @@ const Register = () => {
 
   const { name, email, password, confirmPassword } = user;
   const { setAlert } = useContext(AlertContext);
-  const { register, error, clearErrors } = useContext(AuthContext);
+  const { register, error, clearErrors, isAuthenticated } = useContext(
+    AuthContext
+  );
 
   useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push('/');
+    }
+
     if (error) {
       setAlert(error, 'danger');
       clearErrors();
     }
-  }, [error]);
+
+    //eslint-disable-next-line
+  }, [error, isAuthenticated, props.history]);
 
   const handleChange = (e) =>
     setUser({ ...user, [e.target.name]: e.target.value });
