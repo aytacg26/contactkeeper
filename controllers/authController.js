@@ -47,6 +47,10 @@ const getAuthUser = async (req, res) => {
     //We will find user by id and with projection we will prevent password to fetched from database
     const authUser = await User.findById(authUserId, { password: 0 });
 
+    if (!authUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
     //we will send authUser data, without password
     res.json(authUser);
   } catch (error) {
