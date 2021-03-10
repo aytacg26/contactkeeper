@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import AlertContext from '../../context/alert/alertContext';
+import AuthContext from '../../context/auth/authContext';
+import { emailValidation } from '../../utils/validations';
 
 const Register = () => {
   const [user, setUser] = useState({
@@ -9,13 +12,43 @@ const Register = () => {
   });
 
   const { name, email, password, confirmPassword } = user;
+  const { setAlert } = useContext(AlertContext);
+  const { register, error, clearErrors } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (error) {
+      setAlert(error, 'danger');
+      clearErrors();
+    }
+  }, [error]);
 
   const handleChange = (e) =>
     setUser({ ...user, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Register Submit');
+
+    const isMatch = password === confirmPassword;
+
+    if (name === '' || email === '' || password === '') {
+      setAlert('Please enter all fileds', 'danger', 4500);
+    }
+
+    if (!isMatch) {
+      setAlert('Password and confirm password do not match', 'danger', 5200);
+    }
+
+    if (password.length < 6) {
+      setAlert('Password should be at least 6 characters', 'danger', 5900);
+    }
+
+    if (!emailValidation(email)) {
+      setAlert('Please enter a valid email', 'danger', 6600);
+    }
+
+    if (name && email && isMatch) {
+      register(user);
+    }
   };
 
   return (
@@ -32,7 +65,7 @@ const Register = () => {
         <div className='form-group'>
           <label htmlFor='email'>Email</label>
           <input
-            type='email'
+            type='text'
             name='email'
             value={email}
             onChange={handleChange}
