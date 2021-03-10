@@ -9,7 +9,11 @@ import config from 'config';
  * @access          Public
  */
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: 'Passwords do not match' });
+  }
 
   try {
     let user = await User.findOne({ email });
