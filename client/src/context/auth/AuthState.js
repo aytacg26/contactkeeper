@@ -2,6 +2,7 @@ import React, { useReducer } from 'react';
 import axios from 'axios';
 import authReducer from './authReducer';
 import AuthContext from './authContext';
+import setAuthToken from '../../utils/setAuthToken';
 import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
@@ -27,7 +28,26 @@ const AuthState = (props) => {
   //Add Actions :
 
   //Load User :
-  const loadUser = () => {};
+  const loadUser = async () => {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+    }
+
+    try {
+      const res = await axios.get('/api/auth');
+
+      //When user deleted from database, it was still dispatching the USER_LOADED action
+      //it keeps isAuthenticated true, now, we are checking if res.data is null or not and if it is null
+      //converting the state to default structure.
+      if (res.data) {
+        dispatch({ type: USER_LOADED, payload: res.data });
+      } else {
+        dispatch({ type: AUTH_ERROR });
+      }
+    } catch (error) {
+      dispatch({ type: AUTH_ERROR, payload: error.response.data.message });
+    }
+  };
 
   //Register User:
   const register = async (formData) => {
@@ -41,6 +61,7 @@ const AuthState = (props) => {
       const res = await axios.post('/api/users', formData, config);
 
       dispatch({ type: REGISTER_SUCCESS, payload: res.data });
+      loadUser();
     } catch (error) {
       dispatch({ type: REGISTER_FAIL, payload: error.response.data.message });
     }
