@@ -1,0 +1,5 @@
+{
+  "mongoURI": "mongodb+srv://aytacg26:97Ay345897TaC1453guley1071@contackeeper.hj3bq.mongodb.net/contactkeeperDB?retryWrites=true&w=majority",
+  "JWTSecretKey": "025246b583728dc3129bf1bdee895b34fb435e6446ac03627cf2774e810fa29dcb44dff59d0fcca6ede3f9c1daa3727c7985831ac1f3e0607482a3319d1b5eb3_97Ay345897TaC1453guley1071",
+  "tokenExpire": 18000
+}
