@@ -1,5 +1,5 @@
 import express from 'express';
-import helmet from 'helmet';
+// import helmet from 'helmet';
 import UsersRouter from './routes/users.js';
 import AuthRouter from './routes/auth.js';
 import ContactsRouter from './routes/contacts.js';
@@ -17,7 +17,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 
 //Use helmet package:
-app.use(helmet());
+// app.use(helmet());
 
 //Define Routes
 app.use('/api/users', UsersRouter);
