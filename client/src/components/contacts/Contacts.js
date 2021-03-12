@@ -1,4 +1,4 @@
-import React, { useContext, Fragment, useEffect } from 'react';
+import React, { useContext, Fragment, useEffect, useRef } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import ContactContext from '../../context/contact/contactContext';
 import Spinner from '../layout/Spinner';
@@ -9,9 +9,12 @@ const Contacts = () => {
     ContactContext
   );
 
+  const nodeRef = useRef(null);
+
   useEffect(() => {
     getContacts();
 
+    console.log(contacts);
     //eslint-disable-next-line
   }, []);
 
@@ -33,8 +36,9 @@ const Contacts = () => {
                   key={contact._id}
                   timeout={200}
                   classNames='item'
+                  nodeRef={nodeRef}
                 >
-                  <ContactItem contact={contact} />
+                  <ContactItem contact={contact} nodeRef={nodeRef} />
                 </CSSTransition>
               ))
             : contacts.map((contact) => (
@@ -42,8 +46,9 @@ const Contacts = () => {
                   key={contact._id}
                   timeout={500}
                   classNames='item'
+                  nodeRef={nodeRef}
                 >
-                  <ContactItem contact={contact} />
+                  <ContactItem contact={contact} nodeRef={nodeRef} />
                 </CSSTransition>
               ))}
         </TransitionGroup>
