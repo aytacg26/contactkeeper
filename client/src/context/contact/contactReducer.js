@@ -6,6 +6,7 @@ import {
   UPDATE_CONTACT,
   FILTER_CONTACTS,
   CLEAR_FILTER,
+  CONTACT_ERROR,
 } from '../types';
 
 const contactReducer = (state, action) => {
@@ -22,14 +23,14 @@ const contactReducer = (state, action) => {
       return {
         ...state,
         contacts: state.contacts.map((contact) =>
-          contact.id === payload.id ? payload : contact
+          contact._id === payload.id ? payload : contact
         ),
       };
 
     case DELETE_CONTACT:
       return {
         ...state,
-        contacts: state.contacts.filter((contact) => contact.id !== payload),
+        contacts: state.contacts.filter((contact) => contact._id !== payload),
       };
 
     case SET_CURRENT:
@@ -60,6 +61,11 @@ const contactReducer = (state, action) => {
         filtered: null,
       };
 
+    case CONTACT_ERROR:
+      return {
+        ...state,
+        error: payload,
+      };
     default:
       return state;
   }
