@@ -39,11 +39,9 @@ const AuthState = (props) => {
       //When user deleted from database, it was still dispatching the USER_LOADED action
       //it keeps isAuthenticated true, now, we are checking if res.data is null or not and if it is null
       //converting the state to default structure.
-      if (res.data) {
-        dispatch({ type: USER_LOADED, payload: res.data });
-      } else {
-        dispatch({ type: AUTH_ERROR });
-      }
+      res.data
+        ? dispatch({ type: USER_LOADED, payload: res.data })
+        : dispatch({ type: AUTH_ERROR });
     } catch (error) {
       dispatch({ type: AUTH_ERROR, payload: error.response.data.message });
     }
@@ -68,10 +66,25 @@ const AuthState = (props) => {
   };
 
   //Login User:
-  const login = () => {};
+  const login = async (formData) => {
+    const config = {
+      header: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    try {
+      const res = await axios.post('/api/auth', formData, config);
+
+      dispatch({ type: LOGIN_SUCCESS, payload: res.data });
+      loadUser();
+    } catch (error) {
+      dispatch({ type: LOGIN_FAIL, payload: error.response.data.message });
+    }
+  };
 
   //Logout:
-  const logout = () => {};
+  const logout = () => dispatch({ type: LOGOUT });
 
   //Clear Errors
   const clearErrors = () => {
