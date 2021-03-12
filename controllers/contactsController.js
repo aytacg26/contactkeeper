@@ -12,7 +12,7 @@ const getUserContacts = async (req, res) => {
   try {
     const contacts = await Contact.find(
       { user: authUserId },
-      { __v: 0, _id: 0, user: 0 }
+      { __v: 0, user: 0 }
     ).sort({
       date: -1,
     });
