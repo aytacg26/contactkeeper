@@ -1,10 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import authContext from '../../context/auth/authContext';
+import AlertContext from '../../context/alert/alertContext';
+import { emailValidation } from '../../utils/validations';
 
-const Login = () => {
+const Login = (props) => {
   const [user, setUser] = useState({
     email: '',
     password: '',
   });
+  const { login, isAuthenticated, error, clearErrors } = useContext(
+    authContext
+  );
+  const { setAlert } = useContext(AlertContext);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push('/');
+    }
+
+    if (error && error !== 'No token, authorization denied') {
+      setAlert(error, 'danger');
+      clearErrors();
+    }
+
+    //eslint-disable-next-line
+  }, [error, isAuthenticated, props.history]);
 
   const { email, password } = user;
 
@@ -13,7 +33,20 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login Submit');
+
+    const isValidEmail = emailValidation(email);
+
+    if (!email || !password) {
+      setAlert('Please fill in all fields', 'danger');
+    }
+
+    if (!isValidEmail) {
+      setAlert('Please enter a valid email address.', 'danger');
+    }
+
+    if (email && password && isValidEmail) {
+      login({ email, password });
+    }
   };
 
   return (
@@ -25,7 +58,7 @@ const Login = () => {
         <div className='form-group'>
           <label htmlFor='email'>Email</label>
           <input
-            type='email'
+            type='text'
             name='email'
             value={email}
             onChange={handleChange}
