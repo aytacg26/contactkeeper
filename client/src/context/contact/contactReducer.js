@@ -18,7 +18,7 @@ const contactReducer = (state, action) => {
     case ADD_CONTACT:
       return {
         ...state,
-        contacts: [...state.contacts, payload],
+        contacts: [payload, ...state.contacts],
         loading: false,
       };
 
@@ -33,7 +33,7 @@ const contactReducer = (state, action) => {
       return {
         ...state,
         contacts: state.contacts.map((contact) =>
-          contact._id === payload.id ? payload : contact
+          contact._id === payload._id ? payload : contact
         ),
         loading: false,
       };
